@@ -86,7 +86,12 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     class Meta:
-        UniqueConstraint = ["movie_session", "row", "seat"]
+        constraints =[
+            models.UniqueConstraint(
+                fields=["movie_session", "row", "seat"],
+                name="unique ticket",
+            )
+        ]
 
     def __str__(self) -> str:
         return (f"<Ticket: {self.movie_session.movie} "
@@ -97,10 +102,10 @@ class Ticket(models.Model):
         max_rows = self.movie_session.cinema_hall.rows
         max_seats = self.movie_session.cinema_hall.seats_in_row
 
-        if 0 >= max_rows < self.row:
+        if 1 <= self.row <= max_rows:
             raise ValidationError("wrong row number")
 
-        if 0 >= max_seats < self.seat:
+        if 0 >= self.seat < max_seats:
             raise ValidationError("wrong seat number")
 
     def save(self, *args, **kwargs) -> None:

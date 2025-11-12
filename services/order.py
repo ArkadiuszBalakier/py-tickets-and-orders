@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import transaction
 import datetime
@@ -14,14 +15,19 @@ def create_order(
         date: datetime.date = None
 ) -> None:
     try:
-        user = User.objects.get(username=username)
+        user = get_user_model().objects.get(username=username)
     except User.DoesNotExist:
         raise ValidationError("User does not exist")
 
-    order = Order.objects.create(
-        user=user,
-        created_at=date
-    )
+    if date is None:
+        order = Order.objects.create(
+            user=user,
+            created_at=date
+        )
+    else:
+        order = Order.objects.create(
+            user=user,
+        )
 
     for ticket in tickets:
         ticket_obj = Ticket(

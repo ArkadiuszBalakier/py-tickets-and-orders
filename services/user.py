@@ -1,3 +1,5 @@
+from django.contrib.auth import get_user_model
+
 from db.models import User
 
 
@@ -38,8 +40,9 @@ def update_user(
 
         if not user_id or user_id <= 0:
             raise ValueError("User id is required")
+
         try:
-            user = User.objects.get(id=user_id)
+            user = get_user_model().objects.get(id=user_id)
         except User.DoesNotExist:
             raise ValueError("User does not exist")
 

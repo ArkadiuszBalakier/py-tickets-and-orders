@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -51,3 +52,10 @@ class MovieSession(models.Model):
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
 
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return str(self.created_at)

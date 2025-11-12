@@ -57,7 +57,11 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="orders")
+    user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="orders"
+    )
 
     def __str__(self) -> str:
         formated_date = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
@@ -68,8 +72,16 @@ class Order(models.Model):
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(to=MovieSession, on_delete=models.CASCADE, related_name="tickets")
-    order = models.ForeignKey(to=Order, on_delete=models.CASCADE, related_name="tickets")
+    movie_session = models.ForeignKey(
+        to=MovieSession,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
+    order = models.ForeignKey(
+        to=Order,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
@@ -77,7 +89,8 @@ class Ticket(models.Model):
         UniqueConstraint = ["movie_session", "row", "seat"]
 
     def __str__(self) -> str:
-        return (f"<Ticket: {self.movie_session.movie} {self.movie_session.show_time}"
+        return (f"<Ticket: {self.movie_session.movie} "
+                f"{self.movie_session.show_time}"
                 f" (row: {self.row}, seat: {self.seat})>")
 
     def clean(self) -> None:

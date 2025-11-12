@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.datetime_safe import strftime
 
 
 class Genre(models.Model):
@@ -58,7 +60,35 @@ class Order(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return str(self.created_at)
+        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
 
     class Meta:
         ordering = ['-created_at']
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(to=MovieSession, on_delete=models.CASCADE)
+    order = models.ForeignKey(to=Order, on_delete=models.CASCADE)
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    class Meta:
+        unique_together = ["movie_session", "row", "seat"]
+
+    def __str__(self) -> str:
+        return (f"{self.movie_session.movie} {self.order.created_at}"
+                f" (row: {self.row}, seat: {self.seat})")
+
+    def clean(self) -> None:
+        max_rows = self.movie_session.cinema_hall.rows
+        max_seats = self.movie_session.cinema_hall.seats_in_row
+
+        if 0 >= max_rows < self.row:
+            raise ValidationError("wrong row number")
+
+        if 0 >= max_seats < self.seat:
+            raise ValidationError("wrong seat number")
+
+    def save(self, *args, **kwargs) -> None:
+        self.full_clean()
+        super().save(*args, **kwargs)

@@ -1,7 +1,6 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.datetime_safe import strftime
 
 
 class Genre(models.Model):
@@ -92,3 +91,13 @@ class Ticket(models.Model):
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
+
+
+class User(AbstractUser):
+    username = models.CharField(max_length=255, unique=True)
+    email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+
+    class Meta:
+        USERNAME_FIELD = "username"

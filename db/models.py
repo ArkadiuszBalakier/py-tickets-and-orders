@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User, AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.conf import settings
 
 
 class Genre(models.Model):
@@ -56,7 +57,7 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
@@ -95,9 +96,8 @@ class Ticket(models.Model):
 
 class User(AbstractUser):
     username = models.CharField(max_length=255, unique=True)
-    email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-
-    class Meta:
-        USERNAME_FIELD = "username"
+    email = models.EmailField(unique=True, null=True, blank=True)
+    first_name = models.CharField(max_length=255, null=True, blank=True)
+    last_name = models.CharField(max_length=255, null=True, blank=True)
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = []

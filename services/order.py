@@ -22,10 +22,10 @@ def create_order(
 
     for ticket in tickets:
         ticket_obj = Ticket(
-            movie_session_id=ticket['movie_session'],
+            movie_session_id=ticket["movie_session"],
             order=order,
-            row=ticket['row'],
-            seat=ticket['seat'],
+            row=ticket["row"],
+            seat=ticket["seat"],
         )
         ticket_obj.full_clean()
         ticket_obj.save()

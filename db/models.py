@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User, AbstractUser
+from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.conf import settings
@@ -68,7 +68,7 @@ class Order(models.Model):
         return f"<Order: {formated_date}>"
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
 
 class Ticket(models.Model):
@@ -86,7 +86,7 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     class Meta:
-        constraints =[
+        constraints = [
             models.UniqueConstraint(
                 fields=["movie_session", "row", "seat"],
                 name="unique ticket",

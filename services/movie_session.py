@@ -25,8 +25,9 @@ def get_movie_session_by_id(movie_session_id: int) -> MovieSession:
 
 
 def get_taken_seats(session_id: int) -> list:
-    session = get_movie_session_by_id(session_id)
-    if not session:
+    try:
+        session = get_movie_session_by_id(session_id)
+    except MovieSession.DoesNotExist:
         return []
 
     taken_seats = session.tickets.values("row", "seat").distinct()

@@ -1,6 +1,9 @@
 from django.core.exceptions import ValidationError
 from django.db import transaction
 import datetime
+
+from django.db.models import QuerySet
+
 from db.models import Order, User, Ticket
 
 
@@ -31,9 +34,9 @@ def create_order(
         ticket_obj.save()
 
 
-def get_orders(username: str = None) -> list[Order]:
+def get_orders(username: str = None) -> QuerySet[Order]:
     if username:
         orders = Order.objects.filter(user__username=username)
     else:
         orders = Order.objects.all()
-    return list(orders)
+    return orders

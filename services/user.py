@@ -14,7 +14,7 @@ def create_user(
     if not username or not password:
         raise ValueError("Username and password are required")
 
-    user = User.objects.create_user(
+    get_user_model().objects.create_user(
         username=username,
         password=password,
         email=email,
@@ -22,12 +22,9 @@ def create_user(
         last_name=last_name,
     )
 
-    user.set_password(password)
-    user.save()
-
 
 def get_user(user_id: int) -> User:
-    return User.objects.get(id=user_id)
+    return get_user_model().objects.get(id=user_id)
 
 
 def update_user(
@@ -41,10 +38,7 @@ def update_user(
     if not user_id or user_id <= 0:
         raise ValueError("User id is required")
 
-    try:
-        user = get_user_model().objects.get(id=user_id)
-    except User.DoesNotExist:
-        raise ValueError("User does not exist")
+    user = get_user(user_id)
 
     if new_username is not None:
         user.username = new_username
